@@ -1,0 +1,26 @@
+{
+  "name": "লোকসুর — বাংলার লোকসঙ্গীত সংকলন",
+  "short_name": "লোকসুর",
+  "description": "বাংলাদেশের ১০০টি ঐতিহ্যবাহী লোকসঙ্গীতের ডিজিটাল সংকলন — লার্নিং টু আর্নিং বাংলাদেশ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#12161f",
+  "theme_color": "#12161f",
+  "lang": "bn",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

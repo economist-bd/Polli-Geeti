@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>লোকসুর — বাংলার লোকসঙ্গীত সংকলন</title>
+<meta name="description" content="বাংলাদেশের ১০০টি ঐতিহ্যবাহী লোকসঙ্গীতের ডিজিটাল সংকলন — বাউল, ভাটিয়ালি, ভাওয়াইয়া, জারি ও আরও অনেক ধারা">
+<meta name="theme-color" content="#12161f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12161f;
+  --panel:#1b2330;
+  --panel-2:#212b3a;
+  --rice:#f3ead9;
+  --rice-dim:#c9c0ac;
+  --marigold:#e8a33d;
+  --terracotta:#c1502e;
+  --teal:#3f8f8a;
+  --maroon:#8a3b4a;
+  --line: rgba(243,234,217,0.12);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(232,163,61,0.10), transparent 55%),
+    radial-gradient(ellipse at 100% 110%, rgba(63,143,138,0.12), transparent 55%),
+    var(--ink);
+  color:var(--rice);
+  font-family:'Hind Siliguri', sans-serif;
+  overflow:hidden;
+  height:100vh;
+  height:100dvh;
+}
+#app{
+  max-width:480px;
+  margin:0 auto;
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  border-left:1px solid var(--line);
+  border-right:1px solid var(--line);
+  background:var(--ink);
+}
+
+/* ---------- Header ---------- */
+header{
+  flex:0 0 auto;
+  padding:14px 16px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  position:relative;
+  z-index:20;
+}
+.brand{display:flex; flex-direction:column; line-height:1.1;}
+.brand .kicker{
+  font-size:10.5px;
+  letter-spacing:2.5px;
+  color:var(--marigold);
+  font-weight:600;
+  text-transform:uppercase;
+}
+.brand h1{
+  font-family:'Baloo Da 2', sans-serif;
+  font-size:22px;
+  font-weight:700;
+  margin:1px 0 0;
+  color:var(--rice);
+  letter-spacing:0.3px;
+}
+.hbtns{display:flex; gap:8px;}
+.hbtn{
+  width:38px; height:38px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--rice);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+}
+.hbtn svg{width:18px; height:18px;}
+.hbtn.active{border-color:var(--marigold); color:var(--marigold);}
+
+/* ---------- Search / Filter panel ---------- */
+#toolsPanel{
+  flex:0 0 auto;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .32s ease;
+  z-index:19;
+  position:relative;
+}
+#toolsPanel.open{max-height:230px;}
+.tools-inner{padding:2px 16px 12px;}
+.searchbox{
+  display:flex; align-items:center; gap:8px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:9px 12px;
+  margin-bottom:10px;
+}
+.searchbox svg{width:16px; height:16px; opacity:.6; flex:0 0 auto;}
+.searchbox input{
+  border:none; background:none; outline:none; color:var(--rice);
+  font-family:'Hind Siliguri', sans-serif; font-size:14.5px; width:100%;
+}
+.searchbox input::placeholder{color:var(--rice-dim);}
+.chips{display:flex; flex-wrap:wrap; gap:7px;}
+.chip{
+  font-size:12.5px;
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--rice-dim);
+  cursor:pointer;
+  white-space:nowrap;
+  font-weight:500;
+}
+.chip.on{
+  color:var(--ink);
+  border-color:transparent;
+  font-weight:700;
+}
+
+/* ---------- Carousel ---------- */
+#stage{
+  flex:1 1 auto;
+  position:relative;
+  perspective:1400px;
+  touch-action:pan-y;
+  overflow:hidden;
+}
+.card{
+  position:absolute;
+  inset:12px 16px 10px;
+  border-radius:22px;
+  background:linear-gradient(165deg, var(--panel) 0%, var(--panel-2) 100%);
+  border:1px solid var(--line);
+  box-shadow:0 20px 40px -14px rgba(0,0,0,.55);
+  display:flex;
+  flex-direction:column;
+  padding:0;
+  transform-origin:left center;
+  transition:transform .46s cubic-bezier(.22,.68,.2,1), opacity .4s ease;
+  will-change:transform, opacity;
+  overflow:hidden;
+}
+.card .alpona{
+  position:absolute; inset:0; width:100%; height:100%;
+  opacity:.16; pointer-events:none;
+}
+.card-inner{
+  position:relative; z-index:2;
+  display:flex; flex-direction:column;
+  height:100%;
+  padding:22px 22px 18px;
+}
+.cat-ribbon{
+  align-self:flex-start;
+  font-family:'Baloo Da 2', sans-serif;
+  font-size:12.5px;
+  font-weight:700;
+  padding:5px 13px;
+  border-radius:999px;
+  color:var(--ink);
+  margin-bottom:16px;
+  letter-spacing:.2px;
+}
+.song-index{
+  font-family:'Baloo Da 2', sans-serif;
+  font-size:13px;
+  color:var(--rice-dim);
+  letter-spacing:1px;
+  margin-bottom:6px;
+}
+.song-title{
+  font-family:'Tiro Bangla', serif;
+  font-size:30px;
+  line-height:1.28;
+  font-weight:400;
+  color:var(--rice);
+  margin:0 0 14px;
+}
+.meta-row{
+  display:flex; flex-wrap:wrap; gap:8px 18px;
+  margin-bottom:16px;
+  font-size:13px;
+  color:var(--rice-dim);
+}
+.meta-row span{display:flex; align-items:center; gap:6px;}
+.meta-row svg{width:14px; height:14px; opacity:.75;}
+.divider{height:1px; background:var(--line); margin:2px 0 16px;}
+.song-note{
+  font-size:15.5px;
+  line-height:1.85;
+  color:var(--rice);
+  font-family:'Hind Siliguri', sans-serif;
+  flex:1 1 auto;
+}
+.card-footer{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px dashed var(--line);
+}
+.fav-btn{
+  display:flex; align-items:center; gap:7px;
+  background:none; border:none; color:var(--rice-dim);
+  font-family:'Hind Siliguri', sans-serif; font-size:13px;
+  cursor:pointer; padding:6px 4px;
+}
+.fav-btn svg{width:19px; height:19px; transition:transform .18s ease;}
+.fav-btn.on{color:var(--terracotta);}
+.fav-btn.on svg{transform:scale(1.12);}
+.page-label{
+  font-family:'Baloo Da 2', sans-serif;
+  font-size:12px;
+  color:var(--rice-dim);
+  letter-spacing:1px;
+}
+
+/* stack states */
+.card.active{ transform: translateX(0) rotateY(0deg); opacity:1; z-index:5;}
+.card.prevStack{ transform: translateX(-104%) rotateY(-18deg); opacity:0; z-index:1;}
+.card.nextStack{ transform: translateX(104%) rotateY(18deg); opacity:0; z-index:1;}
+.card.farLeft{ transform: translateX(-6%) scale(.94) rotateY(0deg); opacity:.35; z-index:2;}
+.card.farRight{ transform: translateX(6%) scale(.94) rotateY(0deg); opacity:.35; z-index:2;}
+
+/* ---------- Nav / footer controls ---------- */
+#navbar{
+  flex:0 0 auto;
+  display:flex; align-items:center; gap:12px;
+  padding:10px 18px calc(14px + env(safe-area-inset-bottom));
+  z-index:20;
+}
+.navbtn{
+  width:46px; height:46px;
+  border-radius:50%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--rice);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  flex:0 0 auto;
+}
+.navbtn:active{transform:scale(.93);}
+.navbtn svg{width:20px; height:20px;}
+#progressWrap{flex:1 1 auto;}
+#progressTrack{
+  position:relative;
+  height:5px;
+  border-radius:999px;
+  background:var(--panel);
+  overflow:hidden;
+}
+#progressFill{
+  position:absolute; left:0; top:0; bottom:0;
+  width:1%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--marigold), var(--terracotta));
+  transition:width .35s ease;
+}
+#progressText{
+  text-align:center;
+  font-size:11.5px;
+  color:var(--rice-dim);
+  margin-top:6px;
+  letter-spacing:.4px;
+}
+
+/* empty state */
+.empty{
+  position:absolute; inset:12px 16px 10px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:10px; color:var(--rice-dim);
+  border:1px dashed var(--line); border-radius:22px; padding:30px;
+}
+.empty svg{width:34px; height:34px; opacity:.5;}
+.empty b{color:var(--rice); font-family:'Baloo Da 2',sans-serif; font-weight:600;}
+
+::selection{background:var(--marigold); color:var(--ink);}
+@media (prefers-reduced-motion: reduce){
+  .card{transition:none;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div class="brand">
+      <span class="kicker">লার্নিং টু আর্নিং বাংলাদেশ</span>
+      <h1>লোকসুর</h1>
+    </div>
+    <div class="hbtns">
+      <button class="hbtn" id="searchToggle" aria-label="খুঁজুন">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="hbtn" id="favToggle" aria-label="পছন্দের তালিকা">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="toolsPanel">
+    <div class="tools-inner">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" type="text" placeholder="গানের নাম, গায়ক বা অঞ্চল দিয়ে খুঁজুন...">
+      </div>
+      <div class="chips" id="chipRow"></div>
+    </div>
+  </div>
+
+  <div id="stage"></div>
+
+  <div id="navbar">
+    <button class="navbtn" id="prevBtn" aria-label="আগের গান">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div id="progressWrap">
+      <div id="progressTrack"><div id="progressFill"></div></div>
+      <div id="progressText">পাতা ১ / ১০০</div>
+    </div>
+    <button class="navbtn" id="nextBtn" aria-label="পরের গান">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+/* ================= storage (safe wrapper) ================= */
+const memStore = {};
+const storage = {
+  get(k){ try{ const v = localStorage.getItem(k); return v===null?null:v; }catch(e){ return memStore[k] ?? null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){ memStore[k]=v; } }
+};
+
+/* ================= data ================= */
+const SONGS = [{"title": "খাঁচার ভিতর অচিন পাখি", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 1}, {"title": "বাড়ির কাছে আরশি নগর", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 2}, {"title": "আমি অপার হয়ে বসে আছি", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 3}, {"title": "মিলন হবে কত দিনে", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 4}, {"title": "সময় গেলে সাধন হবে না", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 5}, {"title": "এমন মানব জনম আর কি হবে", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 6}, {"title": "আমার গায়ে যত দুঃখ সয়", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 7}, {"title": "সব লোকে কয় লালন কী জাত সংসারে", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 8}, {"title": "আছে আদম সুরত মনরে", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 9}, {"title": "খাঁচা ভাঙবে কবে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 10}, {"title": "পাখি কখন যে কোন ফাঁদে পড়ে", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 11}, {"title": "না জেনে ফকিরি করলাম আমি", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 12}, {"title": "মন তুই কৃষিকাজ জানো না", "singer": "লালন শাহ", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 13}, {"title": "আমার মন মজিলো না ফকিরি ছাড়া", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "বাউল গান", "region": "কুষ্টিয়া", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 14}, {"title": "যেমনি বাঁশি বাজাইলা", "singer": "রাধারমণ দত্ত", "category": "বাউল গান", "region": "সিলেট", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 15}, {"title": "মানুষ ভজলে সোনার মানুষ হবি", "singer": "রাধারমণ দত্ত", "category": "বাউল গান", "region": "সিলেট", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 16}, {"title": "লোকে বলে বলেরে", "singer": "হাসন রাজা", "category": "বাউল গান", "region": "সুনামগঞ্জ", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 17}, {"title": "আমি না গেলে সেথায়", "singer": "হাসন রাজা", "category": "বাউল গান", "region": "সুনামগঞ্জ", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 18}, {"title": "মায়ারে মায়া বলিয়া", "singer": "হাসন রাজা", "category": "বাউল গান", "region": "সুনামগঞ্জ", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 19}, {"title": "সোনার মদিনায় যাইতাম রে আমি", "singer": "হাসন রাজা", "category": "বাউল গান", "region": "সুনামগঞ্জ", "note": "দেহতত্ত্ব ও আত্মানুসন্ধানের বাণী নিয়ে বাউল সাধকের একতারা-করতালের সুর।", "id": 20}, {"title": "আমায় ভাসাইলি রে", "singer": "আব্বাসউদ্দীন (কথা: জসীম উদ্দীন)", "category": "ভাটিয়ালি", "region": "ফরিদপুর", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 21}, {"title": "ও নদীরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "পদ্মাপাড়", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 22}, {"title": "নাও ছাড়িয়া দে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "বরিশাল", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 23}, {"title": "মাঝি বাইয়া যাও", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "মেঘনাপাড়", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 24}, {"title": "ওরে নীল দরিয়া", "singer": "আব্দুল আলীম", "category": "ভাটিয়ালি", "region": "চাঁদপুর", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 25}, {"title": "তুই যদি আমার হইতি রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "পদ্মাপাড়", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 26}, {"title": "আমি কোথায় পাব তারে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "কুষ্টিয়া", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 27}, {"title": "পদ্মার ঢেউ রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "রাজবাড়ী", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 28}, {"title": "মাঝি তোর নাম কী", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "বরিশাল", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 29}, {"title": "ভাটির টানে ভাসাই", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "বরিশাল", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 30}, {"title": "কূল নাই কিনার নাই", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "মেঘনাপাড়", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 31}, {"title": "মেঘনার ঢেউয়ে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "চাঁদপুর", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 32}, {"title": "একলা নাইয়া", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "পদ্মাপাড়", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 33}, {"title": "সোনার তরী ভাসাই জলে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "ফরিদপুর", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 34}, {"title": "বৈঠা হাতে গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাটিয়ালি", "region": "বরিশাল", "note": "নদীপথে নৌকা বাইতে বাইতে মাঝি-মাল্লার কণ্ঠে ভেসে ওঠা বিরহ ও জীবনবোধের সুর।", "id": 35}, {"title": "ও কি গাড়িয়াল ভাই", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "রংপুর", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 36}, {"title": "তোরষা নদীর ধারে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "কুড়িগ্রাম", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 37}, {"title": "মহেশখোলার মাঠে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "রংপুর", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 38}, {"title": "বন্ধু তোর লাগিয়া রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "দিনাজপুর", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 39}, {"title": "ও বন্ধু কাজল ভোমরা রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "রংপুর", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 40}, {"title": "নাইয়া রে নাইয়া", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "লালমনিরহাট", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 41}, {"title": "সোনা বন্ধুরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "রংপুর", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 42}, {"title": "মইষাল বন্ধুরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "কুড়িগ্রাম", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 43}, {"title": "উজান গাঙের নাইয়া", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "গাইবান্ধা", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 44}, {"title": "চিলমারীর ঘাটে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "কুড়িগ্রাম", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 45}, {"title": "রংপুরের মাটি", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "রংপুর", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 46}, {"title": "ধুধুল গাছের ডালে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "ভাওয়াইয়া", "region": "নীলফামারী", "note": "উত্তরবঙ্গের মাঠ-ঘাট, গরুর গাড়ি আর প্রিয়জনের বিরহ জড়ানো টানা সুরের গান।", "id": 47}, {"title": "কারবালার প্রান্তরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 48}, {"title": "হায় হোসেন হায় হোসেন", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 49}, {"title": "ফোরাতের তীরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 50}, {"title": "ইমাম হোসেনের শোকগাথা", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 51}, {"title": "মহররমের কান্না", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 52}, {"title": "আশুরার স্মৃতি", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 53}, {"title": "কারবালার শহীদান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 54}, {"title": "জয়নালের কাহিনি", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "জারি গান", "region": "সারাদেশ", "note": "কারবালার শোকগাথা নিয়ে রচিত সমবেত কণ্ঠের বিলাপধর্মী গান।", "id": 55}, {"title": "এসো ভাই সবে মিলি", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "সারি গান", "region": "সিলেট", "note": "নৌকাবাইচে দাঁড়িদের ছন্দময় তালে গাওয়া উদ্দীপনামূলক সমবেত গান।", "id": 56}, {"title": "নৌকাবাইচের গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "সারি গান", "region": "বরিশাল", "note": "নৌকাবাইচে দাঁড়িদের ছন্দময় তালে গাওয়া উদ্দীপনামূলক সমবেত গান।", "id": 57}, {"title": "হেইও হেইও টানরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "সারি গান", "region": "সিলেট", "note": "নৌকাবাইচে দাঁড়িদের ছন্দময় তালে গাওয়া উদ্দীপনামূলক সমবেত গান।", "id": 58}, {"title": "বৈঠা মারো জোরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "সারি গান", "region": "নেত্রকোনা", "note": "নৌকাবাইচে দাঁড়িদের ছন্দময় তালে গাওয়া উদ্দীপনামূলক সমবেত গান।", "id": 59}, {"title": "দাঁড়ীদের সারিগান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "সারি গান", "region": "সুনামগঞ্জ", "note": "নৌকাবাইচে দাঁড়িদের ছন্দময় তালে গাওয়া উদ্দীপনামূলক সমবেত গান।", "id": 60}, {"title": "পালতোলা নায়ের গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "সারি গান", "region": "বরিশাল", "note": "নৌকাবাইচে দাঁড়িদের ছন্দময় তালে গাওয়া উদ্দীপনামূলক সমবেত গান।", "id": 61}, {"title": "মুর্শিদ ধন রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "কুষ্টিয়া", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 62}, {"title": "দিল দরিয়ায় ডুব দে মন", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "কুষ্টিয়া", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 63}, {"title": "গুরু বিনে কে দেখাবে পথ", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "পাবনা", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 64}, {"title": "মুর্শিদের চরণে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "কুষ্টিয়া", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 65}, {"title": "পীরের দরবারে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "সিলেট", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 66}, {"title": "মনের মানুষ খুঁজি", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "কুষ্টিয়া", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 67}, {"title": "আলোর পথের দিশা", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "পাবনা", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 68}, {"title": "ফকিরি মুর্শিদি সুর", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "মুর্শিদী", "region": "কুষ্টিয়া", "note": "গুরু-শিষ্য তত্ত্ব ও আধ্যাত্মিক পথনির্দেশনার বাণী বহনকারী সুফি-প্রভাবিত সুর।", "id": 69}, {"title": "ওরে ও বাবু শোনো", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "গম্ভীরা", "region": "চাঁপাইনবাবগঞ্জ", "note": "চাঁপাইনবাবগঞ্জ অঞ্চলের নানা-নাতি সংলাপে সমাজ-সমালোচনার রসাত্মক পরিবেশনা।", "id": 70}, {"title": "দেশের কথা শোনো", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "গম্ভীরা", "region": "চাঁপাইনবাবগঞ্জ", "note": "চাঁপাইনবাবগঞ্জ অঞ্চলের নানা-নাতি সংলাপে সমাজ-সমালোচনার রসাত্মক পরিবেশনা।", "id": 71}, {"title": "নানা-নাতির কথোপকথন", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "গম্ভীরা", "region": "চাঁপাইনবাবগঞ্জ", "note": "চাঁপাইনবাবগঞ্জ অঞ্চলের নানা-নাতি সংলাপে সমাজ-সমালোচনার রসাত্মক পরিবেশনা।", "id": 72}, {"title": "সমাজের ছবি", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "গম্ভীরা", "region": "রাজশাহী", "note": "চাঁপাইনবাবগঞ্জ অঞ্চলের নানা-নাতি সংলাপে সমাজ-সমালোচনার রসাত্মক পরিবেশনা।", "id": 73}, {"title": "গম্ভীরার সুরে ব্যঙ্গ", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "গম্ভীরা", "region": "চাঁপাইনবাবগঞ্জ", "note": "চাঁপাইনবাবগঞ্জ অঞ্চলের নানা-নাতি সংলাপে সমাজ-সমালোচনার রসাত্মক পরিবেশনা।", "id": 74}, {"title": "চাঁপাইয়ের মাটির গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "গম্ভীরা", "region": "চাঁপাইনবাবগঞ্জ", "note": "চাঁপাইনবাবগঞ্জ অঞ্চলের নানা-নাতি সংলাপে সমাজ-সমালোচনার রসাত্মক পরিবেশনা।", "id": 75}, {"title": "আমার সোনার ময়না পাখি", "singer": "আব্দুল আলীম", "category": "পল্লীগীতি", "region": "পাবনা", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 76}, {"title": "পূবালী বাতাসে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "ময়মনসিংহ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 77}, {"title": "রঙিলা রঙিলা রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "টাঙ্গাইল", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 78}, {"title": "কেন পিরিতি বাড়াইলা রে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "কুমিল্লা", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 79}, {"title": "বাঁশি কেন এত সুর জানে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "নেত্রকোনা", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 80}, {"title": "ময়নামতির চরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "কুমিল্লা", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 81}, {"title": "গাঁয়ের বধূ", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "ময়মনসিংহ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 82}, {"title": "আমার গ্রামের নাম", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "কিশোরগঞ্জ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 83}, {"title": "দোতারার সুরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "নেত্রকোনা", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 84}, {"title": "পল্লীর সাঁঝবেলা", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "কিশোরগঞ্জ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 85}, {"title": "ধানক্ষেতের গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "ময়মনসিংহ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 86}, {"title": "কার্তিকের ভোরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "টাঙ্গাইল", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 87}, {"title": "মাটির টানে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "কিশোরগঞ্জ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 88}, {"title": "গাঁয়ের মেঠোপথ", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "পাবনা", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 89}, {"title": "খেয়াঘাটের গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "পল্লীগীতি", "region": "কিশোরগঞ্জ", "note": "গ্রামবাংলার সহজ জীবনযাপন, প্রকৃতি ও প্রেমের কথা বলা মিষ্টি সুরের গান।", "id": 90}, {"title": "ভাদু গানের সুরে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "রাঢ়বঙ্গ", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 91}, {"title": "টুসু পরবের গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "রাঢ়বঙ্গ", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 92}, {"title": "ধামাইল নাচের গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "সিলেট", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 93}, {"title": "বিয়ের গীত", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "সারাদেশ", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 94}, {"title": "জাগগানের সুর", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "ময়মনসিংহ", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 95}, {"title": "মেয়েলি গীত", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "সারাদেশ", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 96}, {"title": "হুদমা দেও গান", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "রাজশাহী", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 97}, {"title": "বারমাস্যা", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "ময়মনসিংহ", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 98}, {"title": "কীর্তনের সুর", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "নদীয়া-ঘেঁষা অঞ্চল", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 99}, {"title": "আলকাপ গানের ঢঙে", "singer": "ঐতিহ্যবাহী (লোকমুখে প্রচলিত)", "category": "আঞ্চলিক ও পার্বণ গীত", "region": "রাজশাহী", "note": "নির্দিষ্ট ঋতু বা পার্বণ ঘিরে আঞ্চলিকভাবে গাওয়া সম্মিলিত লোকজ গান।", "id": 100}];
+
+const CATEGORY_COLORS = {
+  "বাউল গান": "var(--marigold)",
+  "ভাটিয়ালি": "var(--teal)",
+  "ভাওয়াইয়া": "var(--terracotta)",
+  "জারি গান": "var(--maroon)",
+  "সারি গান": "var(--teal)",
+  "মুর্শিদী": "var(--marigold)",
+  "গম্ভীরা": "var(--terracotta)",
+  "পল্লীগীতি": "var(--marigold)",
+  "আঞ্চলিক ও পার্বণ গীত": "var(--maroon)"
+};
+const CATEGORIES = ["সব", ...Array.from(new Set(SONGS.map(s=>s.category)))];
+
+/* ================= alpona motif generator ================= */
+function alponaSVG(seed, color){
+  // deterministic pseudo-random from seed
+  let s = seed;
+  function rnd(){ s = (s*9301+49297)%233280; return s/233280; }
+  const cx=150, cy=150;
+  let petals = "";
+  const n = 6 + Math.floor(rnd()*3);
+  for(let i=0;i<n;i++){
+    const ang = (i/n)*Math.PI*2 + rnd()*0.2;
+    const len = 70 + rnd()*40;
+    const x1 = cx + Math.cos(ang)*30, y1 = cy + Math.sin(ang)*30;
+    const x2 = cx + Math.cos(ang)*len, y2 = cy + Math.sin(ang)*len;
+    const cxo = cx + Math.cos(ang+0.35)*len*0.6, cyo = cy + Math.sin(ang+0.35)*len*0.6;
+    petals += `<path d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${cxo.toFixed(1)},${cyo.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+    petals += `<circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="4.2" fill="${color}"/>`;
+  }
+  return `<svg class="alpona" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="${cx}" cy="${cy}" r="26" fill="none" stroke="${color}" stroke-width="1.4"/>
+    <circle cx="${cx}" cy="${cy}" r="14" fill="none" stroke="${color}" stroke-width="1.4"/>
+    ${petals}
+    <circle cx="${cx}" cy="${cy}" r="130" fill="none" stroke="${color}" stroke-width="0.6" stroke-dasharray="2 6"/>
+  </svg>`;
+}
+
+/* ================= icons ================= */
+const ICON_SINGER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>`;
+const ICON_PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+const ICON_HEART_LINE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`;
+const ICON_HEART_FILL = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`;
+
+/* ================= state ================= */
+let favorites = new Set(JSON.parse(storage.get('loksur_favs') || '[]'));
+let filteredIds = SONGS.map(s=>s.id);
+let currentIdx = 0;
+let activeCategory = "সব";
+let searchTerm = "";
+let showFavOnly = false;
+
+/* ================= DOM refs ================= */
+const stage = document.getElementById('stage');
+const chipRow = document.getElementById('chipRow');
+const searchInput = document.getElementById('searchInput');
+const toolsPanel = document.getElementById('toolsPanel');
+const searchToggle = document.getElementById('searchToggle');
+const favToggle = document.getElementById('favToggle');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+
+/* ================= build chips ================= */
+function renderChips(){
+  chipRow.innerHTML = "";
+  CATEGORIES.forEach(cat=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (cat===activeCategory ? ' on':'');
+    chip.textContent = cat;
+    const col = cat==="সব" ? "var(--marigold)" : (CATEGORY_COLORS[cat] || "var(--marigold)");
+    if(cat===activeCategory){ chip.style.background = col; }
+    chip.addEventListener('click', ()=>{
+      activeCategory = cat;
+      applyFilters(true);
+      renderChips();
+    });
+    chipRow.appendChild(chip);
+  });
+}
+
+/* ================= filtering ================= */
+function applyFilters(resetIndex){
+  let list = SONGS;
+  if(activeCategory !== "সব") list = list.filter(s=>s.category===activeCategory);
+  if(showFavOnly) list = list.filter(s=>favorites.has(s.id));
+  if(searchTerm.trim()){
+    const q = searchTerm.trim();
+    list = list.filter(s => s.title.includes(q) || s.singer.includes(q) || s.region.includes(q) || s.category.includes(q));
+  }
+  filteredIds = list.map(s=>s.id);
+  if(resetIndex) currentIdx = 0;
+  if(currentIdx >= filteredIds.length) currentIdx = Math.max(0, filteredIds.length-1);
+  renderStage();
+}
+
+/* ================= card building ================= */
+function buildCardHTML(song, roleIndexInFiltered){
+  const color = CATEGORY_COLORS[song.category] || "var(--marigold)";
+  const isFav = favorites.has(song.id);
+  return `
+    <div class="card-inner">
+      <span class="cat-ribbon" style="background:${color}">${song.category}</span>
+      <div class="song-index">গান নং ${String(song.id).padStart(3,'0')} / ১০০</div>
+      <h2 class="song-title">${song.title}</h2>
+      <div class="meta-row">
+        <span>${ICON_SINGER} ${song.singer}</span>
+        <span>${ICON_PIN} ${song.region}</span>
+      </div>
+      <div class="divider"></div>
+      <div class="song-note">${song.note}</div>
+      <div class="card-footer">
+        <button class="fav-btn ${isFav?'on':''}" data-id="${song.id}">
+          ${isFav?ICON_HEART_FILL:ICON_HEART_LINE}
+          <span>${isFav?'পছন্দের তালিকায় আছে':'পছন্দে যোগ করুন'}</span>
+        </button>
+        <span class="page-label">${roleIndexInFiltered+1} / ${filteredIds.length}</span>
+      </div>
+    </div>
+  `;
+}
+
+function makeCardEl(songId, stackClass){
+  const song = SONGS.find(s=>s.id===songId);
+  const div = document.createElement('div');
+  div.className = 'card ' + stackClass;
+  const color = CATEGORY_COLORS[song.category] || "var(--marigold)";
+  const colorHex = {
+    "var(--marigold)":"#e8a33d","var(--terracotta)":"#c1502e","var(--teal)":"#3f8f8a","var(--maroon)":"#8a3b4a"
+  }[color] || "#e8a33d";
+  div.innerHTML = alponaSVG(song.id*17, colorHex) + buildCardHTML(song, filteredIds.indexOf(songId));
+  return div;
+}
+
+/* ================= stage rendering ================= */
+function renderStage(){
+  stage.innerHTML = "";
+  if(filteredIds.length===0){
+    stage.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div><b>কোনো গান পাওয়া যায়নি</b></div>
+      <div>অন্য শব্দ দিয়ে খুঁজুন অথবা ফিল্টার পরিবর্তন করুন।</div>
+    </div>`;
+    progressText.textContent = "পাতা ০ / ০";
+    progressFill.style.width = "0%";
+    return;
+  }
+  const total = filteredIds.length;
+  const curId = filteredIds[currentIdx];
+  const prevId = filteredIds[(currentIdx-1+total)%total];
+  const nextId = filteredIds[(currentIdx+1)%total];
+
+  if(total>2){
+    stage.appendChild(makeCardEl(prevId, 'farLeft'));
+  }
+  stage.appendChild(makeCardEl(prevId, 'prevStack'));
+  stage.appendChild(makeCardEl(curId, 'active'));
+  stage.appendChild(makeCardEl(nextId, 'nextStack'));
+  if(total>2){
+    stage.appendChild(makeCardEl(nextId, 'farRight'));
+  }
+
+  progressText.textContent = `পাতা ${toBnDigits(currentIdx+1)} / ${toBnDigits(total)}`;
+  progressFill.style.width = `${((currentIdx+1)/total)*100}%`;
+
+  stage.querySelectorAll('.fav-btn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const id = parseInt(btn.dataset.id,10);
+      toggleFav(id);
+    });
+  });
+}
+
+function toBnDigits(num){
+  const map = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+  return String(num).split('').map(c=>map[c]!==undefined?map[c]:c).join('');
+}
+
+/* ================= favorites ================= */
+function toggleFav(id){
+  if(favorites.has(id)) favorites.delete(id); else favorites.add(id);
+  storage.set('loksur_favs', JSON.stringify(Array.from(favorites)));
+  if(showFavOnly){ applyFilters(false); } else { renderStage(); }
+}
+
+/* ================= navigation ================= */
+function goNext(){
+  if(filteredIds.length===0) return;
+  currentIdx = (currentIdx+1) % filteredIds.length;
+  renderStage();
+}
+function goPrev(){
+  if(filteredIds.length===0) return;
+  currentIdx = (currentIdx-1+filteredIds.length) % filteredIds.length;
+  renderStage();
+}
+nextBtn.addEventListener('click', goNext);
+prevBtn.addEventListener('click', goPrev);
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight') goNext();
+  if(e.key==='ArrowLeft') goPrev();
+});
+
+/* touch swipe */
+let touchStartX = null, touchStartY = null;
+stage.addEventListener('touchstart', (e)=>{
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, {passive:true});
+stage.addEventListener('touchend', (e)=>{
+  if(touchStartX===null) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)*1.3){
+    if(dx < 0) goNext(); else goPrev();
+  }
+  touchStartX = null; touchStartY = null;
+}, {passive:true});
+
+/* ================= tools panel toggles ================= */
+searchToggle.addEventListener('click', ()=>{
+  toolsPanel.classList.toggle('open');
+  searchToggle.classList.toggle('active');
+  if(toolsPanel.classList.contains('open')) setTimeout(()=>searchInput.focus(), 260);
+});
+favToggle.addEventListener('click', ()=>{
+  showFavOnly = !showFavOnly;
+  favToggle.classList.toggle('active', showFavOnly);
+  applyFilters(true);
+});
+searchInput.addEventListener('input', (e)=>{
+  searchTerm = e.target.value;
+  applyFilters(true);
+});
+
+/* ================= init ================= */
+renderChips();
+applyFilters(true);
+
+/* ================= service worker ================= */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
